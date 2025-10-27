@@ -2,7 +2,7 @@
 const express = require('express');
 const cors = require('cors');
 const mongoose = require('mongoose');
-const User = require('./models/User'); // Import model User
+const User = require('./models/User'); // ✅ Đường dẫn đúng đến model User
 
 const app = express();
 app.use(cors());
