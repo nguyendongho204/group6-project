@@ -70,30 +70,34 @@ group6-project/
 
 ##  Hướng dẫn chạy dự án
 
-### 1 Backend
+---
+
+###  1. Backend
+
 ```bash
 cd backend
 npm install
 npm start
-Server mặc định chạy tại:
-👉 http://localhost:3000
+ Server mặc định chạy tại:
+ http://localhost:3000
 
-### 2 Frontend
-bash
+2. Frontend
 cd frontend
 npm install
 npm start
-Giao diện React chạy tại:
- http://localhost:3001
 
-## Các API chính
+
+✅ Giao diện React chạy tại:
+👉 http://localhost:3001
+
+⚙️ Các API chính
 Method	Endpoint	Mô tả
 GET	/users	Lấy danh sách user
 POST	/users	Thêm user mới
 PUT	/users/:id	Cập nhật user
 DELETE	/users/:id	Xóa user
+🧠 Các hoạt động thực hành
 
- Các hoạt động thực hành
 Cài đặt môi trường – VSCode, Node.js, Git
 
 Khởi tạo dự án backend và frontend
@@ -110,7 +114,8 @@ Resolve conflict & squash commit
 
 Merge code hoàn chỉnh vào branch main
 
-Sản phẩm nộp
+📸 Sản phẩm nộp
+
 Ảnh VS Code và cấu trúc thư mục
 
 Ảnh test API bằng Postman
@@ -119,5 +124,5 @@ Sản phẩm nộp
 
 Ảnh dữ liệu MongoDB Atlas
 
-Link repo GitHub:
+📂 Link repo GitHub:
 👉 https://github.com/nguyendongho204/group6-project
