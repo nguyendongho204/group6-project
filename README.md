@@ -12,11 +12,20 @@ Mục tiêu:
 
 ##  Thành viên nhóm
 
-| STT | Họ và tên | Vai trò | Nhiệm vụ chính |
-|-----|------------|----------|----------------|
-| 1 | **Nguyễn Huỳnh Trân** | Backend Developer | Node.js + Express (API CRUD User) | 
-| 2 | **Nguyễn Đông Hồ** | Frontend Developer | React (giao diện và kết nối API) |
-| 3 | **Nguyễn Thành Vũ** | Database Developer | MongoDB (Atlas setup, model User) |
+| STT | Họ và tên | Vai trò | MSSV |
+|-----|------------|----------|------|
+| 1 | **Nguyễn Huỳnh Trân** | Backend Developer | 222543 |
+| 2 | **Nguyễn Đông Hồ** | Frontend Developer | 222598 |
+| 3 | **Nguyễn Thành Vũ** | Database Developer | 221604 |
+
+---
+##  Phân công công việc chi tiết
+
+| Thành viên | Vai trò chính | Công việc đã thực hiện | File / Thành phần phụ trách |
+|-------------|----------------|--------------------------|-------------------------------|
+| **Nguyễn Huỳnh Trân (SV1)** | Backend (Node.js + Express) | - Thiết lập cấu trúc thư mục backend<br>- Tạo các API CRUD (GET, POST, PUT, DELETE)<br>- Kết nối backend với MongoDB Atlas<br>- Xử lý lỗi và cấu hình server | `backend/server.js`<br>`backend/controllers/userController.js`<br>`backend/routes/user.js` |
+| **Nguyễn Đông Hồ (SV2)** | Frontend (React) | - Khởi tạo project React<br>- Tạo component `UserList` và `AddUser`<br>- Kết nối với API backend bằng Axios<br>- Hiển thị và thêm user từ giao diện<br>- Thêm chức năng Sửa/Xóa user<br>- Cải thiện UI và validation form | `frontend/src/components/UserList.jsx`<br>`frontend/src/components/AddUser.jsx`<br>`frontend/src/App.js` |
+| **Nguyễn Thành Vũ (SV3)** | Database (MongoDB) | - Tạo cluster trên MongoDB Atlas<br>- Thiết lập kết nối bằng Mongoose<br>- Tạo model `User.js` (name, email)<br>- Kiểm thử CRUD trực tiếp trên database | `backend/models/User.js`<br>Cấu hình `.env` kết nối MongoDB |
 
 ---
 
@@ -69,16 +78,15 @@ npm start
 Server mặc định chạy tại:
 👉 http://localhost:3000
 
-2 Frontend
+###2 Frontend
 bash
-Sao chép mã
 cd frontend
 npm install
 npm start
 Giao diện React chạy tại:
  http://localhost:3001
 
- Các API chính
+## Các API chính
 Method	Endpoint	Mô tả
 GET	/users	Lấy danh sách user
 POST	/users	Thêm user mới
