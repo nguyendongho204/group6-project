@@ -70,60 +70,77 @@ group6-project/
 
 ##  Hướng dẫn chạy dự án
 
----
+ 1. Backend
 
-##  1. Backend
+Các bước thực hiện:
 
-```bash
-cd backend
+Mở thư mục backend trong VS Code.
+
+Cài đặt các thư viện cần thiết:
+
 npm install
-npm start
- Server mặc định chạy tại:
- http://localhost:3000
 
----
 
-## 2. Frontend
-cd frontend
-npm install
+Khởi động server:
+
 npm start
 
 
-## Giao diện React chạy tại:
+Sau khi chạy, server mặc định hoạt động tại địa chỉ:
+👉 http://localhost:3000
+
+ 2. Frontend
+
+Các bước thực hiện:
+
+Mở thư mục frontend.
+
+Cài đặt các thư viện:
+
+npm install
+
+
+Chạy giao diện React:
+
+npm start
+
+
+Sau khi chạy, ứng dụng frontend hiển thị tại:
  http://localhost:3001
 
-## Các API chính
-Method	Endpoint	Mô tả
-GET	/users	Lấy danh sách user
-POST	/users	Thêm user mới
-PUT	/users/:id	Cập nhật user
-DELETE	/users/:id	Xóa user
- Các hoạt động thực hành
-Cài đặt môi trường – VSCode, Node.js, Git
+ 3. Các API chính
+Phương thức	Endpoint	Chức năng
+GET	/users	Lấy danh sách người dùng
+POST	/users	Thêm người dùng mới
+PUT	/users/:id	Cập nhật thông tin người dùng
+DELETE	/users/:id	Xóa người dùng
+ 4. Các hoạt động chính trong quá trình phát triển
 
-Khởi tạo dự án backend và frontend
+Cài đặt môi trường làm việc (VSCode, Node.js, Git).
 
-Tạo REST API (GET/POST)
+Khởi tạo dự án backend và frontend.
 
-Kết nối React với API backend
+Xây dựng REST API cơ bản (GET/POST).
 
-Tích hợp MongoDB Atlas
+Kết nối React với API backend.
 
-Thêm CRUD nâng cao (PUT/DELETE)
+Tích hợp cơ sở dữ liệu MongoDB Atlas.
 
-Resolve conflict & squash commit
+Hoàn thiện CRUD nâng cao (PUT/DELETE).
 
-Merge code hoàn chỉnh vào branch main
+Xử lý conflict & squash commit khi merge code nhóm.
 
- Sản phẩm nộp
+Merge các branch vào main để hoàn thiện dự án.
 
-Ảnh VS Code và cấu trúc thư mục
+ 5. Sản phẩm nộp
 
-Ảnh test API bằng Postman
+Ảnh chụp cấu trúc thư mục và VS Code.
 
-Ảnh giao diện React hiển thị danh sách user
+Ảnh test API bằng Postman.
 
-Ảnh dữ liệu MongoDB Atlas
+Ảnh giao diện React hiển thị danh sách người dùng.
+
+Ảnh dữ liệu trong MongoDB Atlas.
 
  Link repo GitHub:
  https://github.com/nguyendongho204/group6-project
