@@ -1,90 +1,115 @@
-# 🚀 group6-project
+# group6-project
 
-## 👨‍💻 Thành viên nhóm
-- **Nguyễn Huỳnh Trân** 222543– Backend (Node.js + Express)  
-- **Nguyễn Đông Hồ** 222598 – Frontend (React)  
-- **Nguyễn Thanh Vũ** 221604 – Database (MongoDB)
+##  Mô tả dự án
+Dự án được thực hiện trong **Buổi 4 – Thực hành nhóm: Node.js + React + MongoDB + GitHub**, nhằm thực hành quy trình **phát triển ứng dụng web fullstack**, bao gồm backend (Node.js + Express), frontend (React) và cơ sở dữ liệu (MongoDB).
 
-
-## ⚙️ Mô tả dự án
-Dự án nhóm 6 xây dựng ứng dụng quản lý người dùng cơ bản (CRUD) gồm:
-- **Backend (Node.js + Express):** Tạo REST API (GET, POST, PUT, DELETE).
-- **Frontend (React):** Giao diện hiển thị và thêm/sửa/xóa người dùng.
-- **Database (MongoDB Atlas):** Lưu trữ dữ liệu người dùng thực tế.
+Mục tiêu:
+- Làm quen với quy trình phát triển ứng dụng web fullstack.  
+- Sử dụng Git và GitHub để cộng tác nhóm.  
+- Hiểu và áp dụng quy trình **Git branch – merge – resolve conflict – rebase – squash commit**.  
 
 ---
 
-## 🧱 Cấu trúc thư mục
+##  Thành viên nhóm
+
+| STT | Họ và tên | Vai trò | Nhiệm vụ chính |
+|-----|------------|----------|----------------|
+| 1 | **Nguyễn Huỳnh Trân** | Backend Developer | Node.js + Express (API CRUD User) | 
+| 2 | **Nguyễn Đông Hồ** | Frontend Developer | React (giao diện và kết nối API) |
+| 3 | **Nguyễn Thành Vũ** | Database Developer | MongoDB (Atlas setup, model User) |
+
+---
+
+##  Cấu trúc dự án
+
 group6-project/
+│
 ├── backend/
 │ ├── controllers/
+│ │ └── userController.js
 │ ├── models/
+│ │ └── User.js
 │ ├── routes/
-│ └── server.js
+│ │ └── user.js
+│ ├── server.js
+│ └── .gitignore
+│
 ├── frontend/
 │ ├── src/
-│ ├── public/
+│ │ ├── components/
+│ │ │ ├── UserList.jsx
+│ │ │ └── AddUser.jsx
+│ │ └── App.js
 │ └── package.json
+│
+├── database/
+│ └── User.js
+│
 └── README.md
 
-yaml
-Sao chép mã
+
+## Công nghệ sử dụng
+
+| Thành phần | Công nghệ | Mô tả |
+|-------------|------------|------|
+| Backend | Node.js + Express | Xây dựng REST API (GET, POST, PUT, DELETE) |
+| Frontend | React.js | Giao diện quản lý User |
+| Database | MongoDB Atlas | Lưu trữ dữ liệu người dùng |
+| Công cụ | Git, GitHub | Quản lý mã nguồn nhóm |
 
 ---
 
-## 🧪 Chức năng chính
-- **GET** – Lấy danh sách người dùng  
-- **POST** – Thêm người dùng mới  
-- **PUT** – Cập nhật người dùng  
-- **DELETE** – Xóa người dùng  
+##  Hướng dẫn chạy dự án
 
----
-
-## 🚀 Cách chạy dự án
-
-### 1️⃣ Clone repository
+### 1 Backend
 ```bash
-git clone <URL-REPO>
-cd group6-project
-2️⃣ Cài đặt và chạy Backend
-bash
-Sao chép mã
 cd backend
 npm install
 npm start
-3️⃣ Cài đặt và chạy Frontend
+Server mặc định chạy tại:
+👉 http://localhost:3000
+
+2 Frontend
 bash
 Sao chép mã
-cd ../frontend
+cd frontend
 npm install
 npm start
-🔗 Kết nối MongoDB Atlas
-Database: groupDB
+Giao diện React chạy tại:
+ http://localhost:3001
 
-Collection: users
+ Các API chính
+Method	Endpoint	Mô tả
+GET	/users	Lấy danh sách user
+POST	/users	Thêm user mới
+PUT	/users/:id	Cập nhật user
+DELETE	/users/:id	Xóa user
 
-Model: User.js gồm các trường name, email
+ Các hoạt động thực hành
+Cài đặt môi trường – VSCode, Node.js, Git
 
-✅ Kết quả
-API hoạt động: /users (GET, POST, PUT, DELETE)
+Khởi tạo dự án backend và frontend
 
-Frontend hiển thị dữ liệu người dùng từ MongoDB
+Tạo REST API (GET/POST)
 
-Giao diện React cho phép thêm, sửa, xóa user trực tiếp
+Kết nối React với API backend
 
-📦 Công nghệ sử dụng
-Node.js + Express
+Tích hợp MongoDB Atlas
 
-React.js
+Thêm CRUD nâng cao (PUT/DELETE)
 
-MongoDB Atlas + Mongoose
+Resolve conflict & squash commit
 
-Axios
+Merge code hoàn chỉnh vào branch main
 
-Git + GitHub
+Sản phẩm nộp
+Ảnh VS Code và cấu trúc thư mục
 
-🏁 Trạng thái dự án
-✅ Hoàn thiện CRUD đầy đủ
-✅ Kết nối MongoDB
-✅ Merge tất cả nhánh vào main
-✅ Cập nhật README.md cuối cùng
+Ảnh test API bằng Postman
+
+Ảnh giao diện React hiển thị danh sách user
+
+Ảnh dữ liệu MongoDB Atlas
+
+Link repo GitHub:
+👉 https://github.com/nguyendongho204/group6-project
