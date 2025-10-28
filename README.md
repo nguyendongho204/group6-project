@@ -72,7 +72,7 @@ group6-project/
 
 ---
 
-###  1. Backend
+##  1. Backend
 
 ```bash
 cd backend
@@ -83,13 +83,13 @@ npm start
 
 ---
 
-### 2. Frontend
+## 2. Frontend
 cd frontend
 npm install
 npm start
 
 
- Giao diện React chạy tại:
+## Giao diện React chạy tại:
  http://localhost:3001
 
 ## Các API chính
