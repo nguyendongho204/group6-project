@@ -78,7 +78,7 @@ npm start
 Server mặc định chạy tại:
 👉 http://localhost:3000
 
-###2 Frontend
+### 2 Frontend
 bash
 cd frontend
 npm install
