@@ -1,58 +1,58 @@
-const User = require("../models/User");
+// Import User model nếu đang sử dụng MongoDB
+const User = require('../models/User');
 
-// GET all users
+// Nếu chưa dùng MongoDB, sử dụng mảng tạm
+let users = [];
+
+// GET: Lấy danh sách users
 exports.getUsers = async (req, res) => {
-  try {
-    const users = await User.find();
-    res.json(users);
-  } catch (err) {
-    res.status(500).json({ message: err.message });
-  }
+    try {
+        const users = await User.find();
+        res.json(users);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
 };
 
-// POST create user
+// POST: Tạo user mới
 exports.createUser = async (req, res) => {
-  try {
-    const { name, email } = req.body;
-    const user = new User({ name, email });
-    await user.save();
-    res.json(user);
-  } catch (err) {
-    res.status(400).json({ message: err.message });
-  }
+    try {
+        const user = new User(req.body);
+        const savedUser = await user.save();
+        res.status(201).json(savedUser);
+    } catch (error) {
+        res.status(400).json({ message: error.message });
+    }
 };
 
-// PUT update user
+// PUT: Cập nhật user
 exports.updateUser = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const { name, email } = req.body;
-
-    const user = await User.findByIdAndUpdate(
-      id,
-      { name, email },
-      { new: true } // trả về user sau khi cập nhật
-    );
-
-    if (!user) return res.status(404).json({ message: "User not found" });
-
-    res.json(user);
-  } catch (err) {
-    res.status(500).json({ message: err.message });
-  }
+    try {
+        const { id } = req.params;
+        const updatedUser = await User.findByIdAndUpdate(
+            id,
+            req.body,
+            { new: true }
+        );
+        if (!updatedUser) {
+            return res.status(404).json({ message: "Không tìm thấy user" });
+        }
+        res.json(updatedUser);
+    } catch (error) {
+        res.status(400).json({ message: error.message });
+    }
 };
 
-// DELETE user
+// DELETE: Xóa user
 exports.deleteUser = async (req, res) => {
-  try {
-    const { id } = req.params;
-
-    const user = await User.findByIdAndDelete(id);
-
-    if (!user) return res.status(404).json({ message: "User not found" });
-
-    res.json({ message: "User deleted" });
-  } catch (err) {
-    res.status(500).json({ message: err.message });
-  }
+    try {
+        const { id } = req.params;
+        const deletedUser = await User.findByIdAndDelete(id);
+        if (!deletedUser) {
+            return res.status(404).json({ message: "Không tìm thấy user" });
+        }
+        res.json({ message: "Đã xóa user thành công" });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
 };
