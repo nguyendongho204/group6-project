@@ -1,54 +1,22 @@
-// backend/server.js
-const express = require('express');
-const cors = require('cors');
-const mongoose = require('mongoose');
-const User = require('./models/User'); // ✅ Đường dẫn đúng đến model User
+import dotenv from "dotenv";
+dotenv.config(); // Load .env ngay đầu
 
-const app = express();
-app.use(cors());
-app.use(express.json());
+import mongoose from "mongoose";
+import app from "./app.js";
+import morgan from "morgan";
 
-// ✅ Kết nối MongoDB Atlas
-mongoose.connect('mongodb+srv://NguyenThanhVu:dongho123@cluster0.tqdrv7b.mongodb.net/groupDB?retryWrites=true&w=majority')
-  .then(() => console.log('✅ Connected to MongoDB Atlas'))
-  .catch(err => console.error('❌ MongoDB connection error:', err));
+const PORT = process.env.PORT || 5000;
+const MONGODB_URI = process.env.MONGODB_URI;
 
-// ✅ Route kiểm tra backend hoạt động
-app.get('/', (req, res) => {
-  res.json({ message: 'Backend is running' });
-});
+// Kiểm tra giá trị biến môi trường
+console.log("🔍 PORT =", PORT);
+console.log("🔍 MONGODB_URI =", MONGODB_URI ? "✅ Loaded" : "❌ Missing");
 
-// ✅ Lấy danh sách người dùng từ MongoDB
-app.get('/users', async (req, res) => {
-  try {
-    const users = await User.find();
-    res.json(users);
-  } catch (err) {
-    console.error('❌ Lỗi khi lấy danh sách người dùng:', err);
-    res.status(500).json({ error: err.message });
-  }
-});
+mongoose
+  .connect(MONGODB_URI)
+  .then(() => console.log("✅ Connected to MongoDB Atlas"))
+  .catch((err) => console.error("❌ MongoDB connection error:", err));
 
-// ✅ Thêm người dùng mới vào MongoDB
-app.post('/users', async (req, res) => {
-  try {
-    const { name, email } = req.body;
+app.use(morgan("dev"));
 
-    if (!name || !email) {
-      return res.status(400).json({ message: 'Thiếu thông tin người dùng!' });
-    }
-
-    const newUser = new User({ name, email });
-    await newUser.save();
-
-    console.log('✅ Đã lưu người dùng vào MongoDB:', newUser);
-    res.status(201).json(newUser);
-  } catch (err) {
-    console.error('❌ Lỗi khi thêm người dùng:', err);
-    res.status(500).json({ error: err.message });
-  }
-});
-
-// ✅ Khởi động server
-const PORT = 3000;
 app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
