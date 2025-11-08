@@ -1,11 +1,16 @@
 // backend/models/User.js
-const mongoose = require('mongoose');
+import mongoose from "mongoose";
 
 // ✅ Định nghĩa Schema cho User
 const userSchema = new mongoose.Schema({
   name: { type: String, required: true },
-  email: { type: String, required: true }
+  email: { type: String, required: true },
+  password: { type: String, required: true },
+  createdAt: { type: Date, default: Date.now }
 });
 
-// ✅ Tạo và export model User
-module.exports = mongoose.model('User', userSchema);
+// ✅ Tạo model
+const User = mongoose.model("User", userSchema);
+
+// ✅ Export mặc định
+export default User;
