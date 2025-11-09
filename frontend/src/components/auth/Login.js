@@ -72,6 +72,9 @@ const Login = () => {
                         Đăng nhập
                     </button>
                 </form>
+                <div className="auth-links">
+                    <a href="/forgot-password" className="forgot-link">Quên mật khẩu?</a>
+                </div>
                 <p className="register-link">
                     Chưa có tài khoản? <a href="/register">Đăng ký tại đây</a>
                 </p>

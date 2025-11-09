@@ -1,0 +1,401 @@
+{
+  "info": {
+    "name": "Group6 - Advanced Features API",
+    "description": "API Collection cho Forgot Password, Reset Password và Upload Avatar",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:5001",
+      "type": "string"
+    },
+    {
+      "key": "token",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "resetToken",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "1. Authentication",
+      "item": [
+        {
+          "name": "Signup",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.collectionVariables.set('token', jsonData.token);",
+                  "    pm.environment.set('token', jsonData.token);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Test User\",\n  \"email\": \"testuser@example.com\",\n  \"password\": \"123456\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/signup",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "signup"]
+            },
+            "description": "Đăng ký tài khoản mới"
+          },
+          "response": []
+        },
+        {
+          "name": "Login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.collectionVariables.set('token', jsonData.token);",
+                  "    pm.environment.set('token', jsonData.token);",
+                  "    console.log('Token saved:', jsonData.token);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"testuser@example.com\",\n  \"password\": \"123456\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "login"]
+            },
+            "description": "Đăng nhập và lấy JWT token"
+          },
+          "response": []
+        },
+        {
+          "name": "Get User Info",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/me",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "me"]
+            },
+            "description": "Lấy thông tin user hiện tại (cần token)"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "2. Password Reset",
+      "item": [
+        {
+          "name": "Forgot Password",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    var jsonData = pm.response.json();",
+                  "    if (jsonData.resetUrl) {",
+                  "        var url = jsonData.resetUrl;",
+                  "        var token = url.split('/').pop();",
+                  "        pm.collectionVariables.set('resetToken', token);",
+                  "        console.log('Reset Token saved:', token);",
+                  "        console.log('Full Reset URL:', url);",
+                  "    }",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"testuser@example.com\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/forgot-password",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "forgot-password"]
+            },
+            "description": "Gửi yêu cầu reset password. Token sẽ được log ra backend console và tự động lưu vào biến resetToken."
+          },
+          "response": []
+        },
+        {
+          "name": "Reset Password",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"token\": \"{{resetToken}}\",\n  \"password\": \"newpassword123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/reset-password",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "reset-password"]
+            },
+            "description": "Reset mật khẩu với token. Token tự động lấy từ Forgot Password request trước đó."
+          },
+          "response": []
+        },
+        {
+          "name": "Login with New Password",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.collectionVariables.set('token', jsonData.token);",
+                  "    console.log('Đăng nhập thành công với mật khẩu mới!');",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"testuser@example.com\",\n  \"password\": \"newpassword123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "login"]
+            },
+            "description": "Verify reset password thành công bằng cách đăng nhập với mật khẩu mới"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "3. Upload Avatar",
+      "item": [
+        {
+          "name": "Upload Avatar",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    var jsonData = pm.response.json();",
+                  "    console.log('Avatar URL:', jsonData.avatarUrl);",
+                  "    pm.test('Upload thành công', function() {",
+                  "        pm.expect(jsonData.avatarUrl).to.include('http://localhost:5001/uploads/avatars');",
+                  "    });",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "description": "JWT Token từ login"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "avatar",
+                  "type": "file",
+                  "src": [],
+                  "description": "Chọn file ảnh JPG/PNG (tối đa 5MB)"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/upload-avatar",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "upload-avatar"]
+            },
+            "description": "Upload ảnh đại diện. Cần Authorization token. File được lưu vào backend/uploads/avatars/"
+          },
+          "response": []
+        },
+        {
+          "name": "Verify Upload - Get User Info",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/me",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "me"]
+            },
+            "description": "Kiểm tra user info có field avatar với URL ảnh vừa upload"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "4. Error Test Cases",
+      "item": [
+        {
+          "name": "Forgot Password - Email Not Found",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"notexist@example.com\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/forgot-password",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "forgot-password"]
+            },
+            "description": "Test với email không tồn tại. Expect: 404"
+          },
+          "response": []
+        },
+        {
+          "name": "Reset Password - Invalid Token",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"token\": \"invalid-token-12345\",\n  \"password\": \"newpass123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/reset-password",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "reset-password"]
+            },
+            "description": "Test với token không hợp lệ. Expect: 400"
+          },
+          "response": []
+        },
+        {
+          "name": "Upload Avatar - No Token",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "avatar",
+                  "type": "file",
+                  "src": []
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/upload-avatar",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "upload-avatar"]
+            },
+            "description": "Test upload không có Authorization. Expect: 401"
+          },
+          "response": []
+        },
+        {
+          "name": "Upload Avatar - No File",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": []
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/upload-avatar",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "upload-avatar"]
+            },
+            "description": "Test upload không chọn file. Expect: 400"
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}

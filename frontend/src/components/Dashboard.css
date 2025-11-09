@@ -123,6 +123,103 @@
     background: linear-gradient(135deg, #ffb300 0%, #f57c00 100%);
 }
 
+/* Change Password Section */
+.password-section {
+    grid-column: 1 / -1;
+    background: white;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    margin-top: 10px;
+}
+
+.change-password-section h3 {
+    color: #333;
+    margin-bottom: 20px;
+    font-size: 20px;
+    border-bottom: 2px solid #667eea;
+    padding-bottom: 10px;
+}
+
+.change-password-form {
+    max-width: 600px;
+}
+
+.change-password-form .form-group {
+    margin-bottom: 20px;
+}
+
+.change-password-form .form-group label {
+    display: block;
+    margin-bottom: 8px;
+    color: #333;
+    font-weight: 500;
+    font-size: 14px;
+}
+
+.change-password-form .form-group input {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 14px;
+    transition: border-color 0.3s;
+}
+
+.change-password-form .form-group input:focus {
+    outline: none;
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.change-password-form .button-group {
+    display: flex;
+    gap: 15px;
+    margin-top: 25px;
+}
+
+.change-password-form .btn-save {
+    background: #667eea;
+    color: white;
+    padding: 12px 30px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    transition: background 0.3s;
+}
+
+.change-password-form .btn-save:hover {
+    background: #5a6fd8;
+}
+
+.change-password-form .btn-save:disabled {
+    background: #9ca3af;
+    cursor: not-allowed;
+}
+
+.change-password-form .btn-reset {
+    background: #6b7280;
+    color: white;
+    padding: 12px 30px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    transition: background 0.3s;
+}
+
+.change-password-form .btn-reset:hover {
+    background: #4b5563;
+}
+
+.change-password-form .btn-reset:disabled {
+    background: #d1d5db;
+    cursor: not-allowed;
+}
+
 @media (max-width: 768px) {
     .dashboard-content {
         grid-template-columns: 1fr;

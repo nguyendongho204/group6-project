@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import UploadAvatar from './UploadAvatar';
 import './Profile.css';
 
 axios.defaults.baseURL = 'http://localhost:5001/api';
@@ -97,6 +98,12 @@ const Profile = () => {
         }
     };
 
+    const handleAvatarUploadSuccess = (avatarUrl) => {
+        // Update user context with new avatar
+        updateUserContext({ ...user, avatar: avatarUrl });
+        setMessage({ type: 'success', text: 'Avatar đã được cập nhật!' });
+    };
+
     return (
         <div className="profile-container">
             <div className="profile-card">
@@ -105,6 +112,11 @@ const Profile = () => {
                 {message.text && (
                     <div className={`alert ${message.type}`}>{message.text}</div>
                 )}
+
+                {/* Avatar Upload Section */}
+                <UploadAvatar onUploadSuccess={handleAvatarUploadSuccess} />
+
+                <hr style={{ margin: '30px 0', border: '1px solid #eee' }} />
 
                 <form onSubmit={handleSubmit} className="profile-form">
                     <div className="form-group">
