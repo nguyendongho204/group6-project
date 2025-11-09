@@ -1,15 +1,22 @@
+// backend/middleware/authMiddleware.js
 import jwt from "jsonwebtoken";
 
-export default function auth(req, res, next) {
-  const raw = req.headers.authorization || "";
-  const token = raw.startsWith("Bearer ") ? raw.slice(7) : null;
-  if (!token) return res.status(401).json({ message: "Missing token" });
-
+const auth = (req, res, next) => {
   try {
-    const payload = jwt.verify(token, process.env.JWT_SECRET);
-    req.user = { id: payload.id, role: payload.role };
+    const authHeader = req.headers.authorization;
+
+    if (!authHeader || !authHeader.startsWith("Bearer ")) {
+      return res.status(401).json({ message: "Thiếu token xác thực" });
+    }
+
+    const token = authHeader.split(" ")[1];
+    const decoded = jwt.verify(token, process.env.JWT_SECRET || "your_jwt_secret_key");
+
+    req.user = decoded; // lưu userId vào req.user
     next();
-  } catch {
-    res.status(401).json({ message: "Invalid token" });
+  } catch (err) {
+    res.status(401).json({ message: "Token không hợp lệ" });
   }
-}
+};
+
+export default auth;

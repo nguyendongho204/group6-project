@@ -3,10 +3,12 @@ import axios from 'axios';
 
 const AuthContext = createContext();
 
+axios.defaults.baseURL = 'http://localhost:5001/api';
+
 const initialState = {
     user: null,
     token: localStorage.getItem('token'),
-    isAuthenticated: false,
+    isAuthenticated: Boolean(localStorage.getItem('token')),
     loading: true,
     error: null
 };
@@ -49,6 +51,13 @@ const authReducer = (state, action) => {
                 error: null
             };
         
+        case 'UPDATE_USER':
+            return {
+                ...state,
+                user: action.payload,
+                loading: false
+            };
+        
         default:
             return state;
     }
@@ -57,87 +66,98 @@ const authReducer = (state, action) => {
 export const AuthProvider = ({ children }) => {
     const [state, dispatch] = useReducer(authReducer, initialState);
 
-    // Set auth token in axios headers
     const setAuthToken = (token) => {
         if (token) {
+            console.log('Setting auth token:', token);
             axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+            localStorage.setItem('token', token);
         } else {
+            console.log('Removing auth token');
             delete axios.defaults.headers.common['Authorization'];
+            localStorage.removeItem('token');
         }
     };
 
-    // Load user on app start
     useEffect(() => {
-        if (state.token) {
-            setAuthToken(state.token);
-        }
-        dispatch({ type: 'SET_LOADING', payload: false });
-    }, [state.token]);
-
-    // Signup user
-    const signup = async (userData) => {
-        try {
-            dispatch({ type: 'SET_LOADING', payload: true });
-            
-            const response = await axios.post('http://localhost:5000/api/auth/signup', userData);
-            
-            dispatch({
-                type: 'SIGNUP_SUCCESS',
-                payload: {
-                    token: response.data.token,
-                    user: response.data.user || { name: userData.name, email: userData.email }
+        const loadUser = async () => {
+            const token = localStorage.getItem('token');
+            if (token) {
+                setAuthToken(token);
+                try {
+                    const res = await axios.get('/auth/me');
+                    dispatch({
+                        type: 'LOGIN_SUCCESS',
+                        payload: {
+                            token: token,
+                            user: res.data.user
+                        }
+                    });
+                } catch (error) {
+                    console.error('Error loading user:', error);
+                    dispatch({ type: 'AUTH_ERROR' });
                 }
-            });
-            
-            return { success: true, message: response.data.message };
-        } catch (error) {
-            const errorMessage = error.response?.data?.message || 'Đăng ký thất bại';
-            dispatch({
-                type: 'AUTH_ERROR',
-                payload: errorMessage
-            });
-            return { success: false, message: errorMessage };
-        }
+            }
+            dispatch({ type: 'SET_LOADING', payload: false });
+        };
+
+        loadUser();
+    }, []);
+
+    const updateUserContext = (userData) => {
+        dispatch({
+            type: 'UPDATE_USER',
+            payload: userData
+        });
     };
 
-    // Login user
     const login = async (userData) => {
         try {
             dispatch({ type: 'SET_LOADING', payload: true });
             
-            const response = await axios.post('http://localhost:5000/api/auth/login', userData);
+            const response = await axios.post('/auth/login', userData);
+            
+            setAuthToken(response.data.token);
             
             dispatch({
                 type: 'LOGIN_SUCCESS',
                 payload: {
                     token: response.data.token,
-                    user: response.data.user || { email: userData.email }
+                    user: response.data.user
                 }
             });
             
-            return { success: true, message: response.data.message };
+            return { 
+                success: true, 
+                message: 'Đăng nhập thành công!'
+            };
         } catch (error) {
-            const errorMessage = error.response?.data?.message || 'Đăng nhập thất bại';
+            console.error('Lỗi đăng nhập:', error);
+            
             dispatch({
                 type: 'AUTH_ERROR',
-                payload: errorMessage
+                payload: error.response?.data?.message || 'Đăng nhập thất bại'
             });
-            return { success: false, message: errorMessage };
+            
+            return { 
+                success: false, 
+                message: error.response?.data?.message || 'Đăng nhập thất bại'
+            };
+        } finally {
+            dispatch({ type: 'SET_LOADING', payload: false });
         }
     };
 
-    // Logout user
     const logout = async () => {
         try {
-            await axios.post('http://localhost:5000/api/auth/logout');
-            dispatch({ type: 'LOGOUT' });
+            await axios.post('/auth/logout');
         } catch (error) {
-            // Even if API fails, still logout locally
+            console.error('Logout error:', error);
+        } finally {
+            setAuthToken(null);
             dispatch({ type: 'LOGOUT' });
         }
     };
 
-    // Clear errors
     const clearErrors = () => {
         dispatch({ type: 'CLEAR_ERRORS' });
     };
@@ -145,10 +165,10 @@ export const AuthProvider = ({ children }) => {
     return (
         <AuthContext.Provider value={{
             ...state,
-            signup,
             login,
             logout,
-            clearErrors
+            clearErrors,
+            updateUserContext
         }}>
             {children}
         </AuthContext.Provider>

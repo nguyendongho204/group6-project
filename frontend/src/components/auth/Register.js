@@ -15,13 +15,23 @@ const Register = () => {
     });
     
     const [formErrors, setFormErrors] = useState({});
+    const [submitError, setSubmitError] = useState('');
 
+    // Sửa useEffect để tránh vòng lặp vô hạn
     useEffect(() => {
-        if (isAuthenticated) {
+        let isMounted = true;
+
+        // Kiểm tra xác thực và điều hướng
+        if (isAuthenticated && isMounted) {
             navigate('/dashboard');
         }
-        return () => clearErrors();
-    }, [isAuthenticated, navigate, clearErrors]);
+
+        // Cleanup function
+        return () => {
+            isMounted = false;
+            clearErrors(); // Chỉ clear errors khi unmount
+        };
+    }, [isAuthenticated, navigate]); // Chỉ theo dõi isAuthenticated và navigate
 
     const { name, email, password, confirmPassword } = formData;
 
@@ -31,12 +41,17 @@ const Register = () => {
             [e.target.name]: e.target.value
         });
         
-        // Clear specific field error when user starts typing
+        // Clear specific field error
         if (formErrors[e.target.name]) {
             setFormErrors({
                 ...formErrors,
                 [e.target.name]: ''
             });
+        }
+
+        // Clear submit error when user types
+        if (submitError) {
+            setSubmitError('');
         }
     };
 
@@ -73,18 +88,31 @@ const Register = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         
+        // Clear previous errors
+        setFormErrors({});
+        setSubmitError('');
+
         const errors = validateForm();
         if (Object.keys(errors).length > 0) {
             setFormErrors(errors);
             return;
         }
 
-        setFormErrors({});
-        const result = await signup({ name, email, password });
-        
-        if (result.success) {
-            alert('Đăng ký thành công! Chào mừng bạn đến với hệ thống.');
-            navigate('/dashboard');
+        try {
+            const result = await signup({ 
+                name, 
+                email, 
+                password 
+            });
+            
+            if (result.success) {
+                alert('Đăng ký thành công! Chào mừng bạn đến với hệ thống.');
+                navigate('/dashboard');
+            } else {
+                setSubmitError(result.message || 'Đăng ký thất bại. Vui lòng thử lại.');
+            }
+        } catch (err) {
+            setSubmitError('Có lỗi xảy ra. Vui lòng thử lại sau.');
         }
     };
 
@@ -150,10 +178,17 @@ const Register = () => {
                             className={formErrors.confirmPassword ? 'error' : ''}
                             placeholder="Xác nhận mật khẩu"
                         />
-                        {formErrors.confirmPassword && <span className="error-message">{formErrors.confirmPassword}</span>}
+                        {formErrors.confirmPassword && (
+                            <span className="error-message">{formErrors.confirmPassword}</span>
+                        )}
                     </div>
 
-                    {error && <div className="error-message global-error">{error}</div>}
+                    {/* Hiển thị lỗi từ API hoặc lỗi submit */}
+                    {(error || submitError) && (
+                        <div className="error-message global-error">
+                            {submitError || error}
+                        </div>
+                    )}
 
                     <button 
                         type="submit" 

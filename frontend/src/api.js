@@ -1,6 +1,9 @@
 import axios from "axios";
 
-const API = "http://localhost:3000"; // ⚠️ Đúng cổng backend của bạn
+// Sử dụng biến môi trường cho API URL
+// Development: http://localhost:5001/api
+// Production: URL backend đã deploy (sẽ cấu hình trong Vercel)
+const API = process.env.REACT_APP_API_URL || "http://localhost:5001/api";
 
 export const getUsers = () => axios.get(`${API}/users`);
 export const createUser = (data) => axios.post(`${API}/users`, data);

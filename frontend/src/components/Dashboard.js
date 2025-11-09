@@ -1,11 +1,13 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
+import ChangePassword from './profile/ChangePassword';
 import './Dashboard.css';
 
 const Dashboard = () => {
     const { user, logout, token } = useAuth();
     const navigate = useNavigate();
+    const [showChangePassword, setShowChangePassword] = useState(false);
 
     const handleLogout = async () => {
         if (window.confirm('Bạn có chắc chắn muốn đăng xuất không?')) {
@@ -50,17 +52,30 @@ const Dashboard = () => {
                 <div className="quick-actions">
                     <h3>Hành Động Nhanh</h3>
                     <div className="action-buttons">
-                        <button className="action-btn" onClick={() => alert('Chức năng sẽ có trong Hoạt động 2')}>
+                        {/* Thay đổi button thành Link */}
+                        <Link to="/profile" className="action-btn">
                             Cập Nhật Hồ Sơ
-                        </button>
-                        <button className="action-btn" onClick={() => alert('Chức năng sẽ có trong Hoạt động 3')}>
-                            Quản Lý Users (Admin)
-                        </button>
-                        <button className="action-btn" onClick={() => alert('Chức năng sẽ có trong Hoạt động 4')}>
-                            Đổi Mật Khẩu
+                        </Link>
+                        {user?.role === 'Admin' && (
+                            <Link to="/admin" className="action-btn admin-btn">
+                                👨‍💼 Quản Lý Users (Admin)
+                            </Link>
+                        )}
+                        <button 
+                            className="action-btn" 
+                            onClick={() => setShowChangePassword(!showChangePassword)}
+                        >
+                            {showChangePassword ? '🔒 Ẩn Đổi Mật Khẩu' : '🔑 Đổi Mật Khẩu'}
                         </button>
                     </div>
                 </div>
+
+                {/* Change Password Section */}
+                {showChangePassword && (
+                    <div className="password-section">
+                        <ChangePassword />
+                    </div>
+                )}
             </div>
         </div>
     );

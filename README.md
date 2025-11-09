@@ -87,7 +87,7 @@ npm start
 
 
 Sau khi chạy, server mặc định hoạt động tại địa chỉ:
-👉 http://localhost:3000
+ http://localhost:3000
 
  2. Frontend
 

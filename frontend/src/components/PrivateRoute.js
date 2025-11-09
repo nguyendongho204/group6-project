@@ -1,26 +1,31 @@
 import React from 'react';
-import { useAuth } from '../context/AuthContext';
 import { Navigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 
 const PrivateRoute = ({ children }) => {
     const { isAuthenticated, loading } = useAuth();
 
+    console.log('PrivateRoute Status:', { 
+        isAuthenticated, 
+        loading,
+        hasToken: !!localStorage.getItem('token')
+    });
+
     if (loading) {
         return (
-            <div style={{
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center',
-                height: '100vh',
-                fontSize: '18px',
-                background: '#f8fafc'
-            }}>
-                <div>Đang tải...</div>
+            <div className="loading-container">
+                <div className="loading-spinner">Loading...</div>
             </div>
         );
     }
 
-    return isAuthenticated ? children : <Navigate to="/login" />;
+    if (!isAuthenticated) {
+        console.log('Not authenticated, redirecting to login');
+        return <Navigate to="/login" replace />;
+    }
+
+    console.log('Authenticated, rendering protected content');
+    return children;
 };
 
 export default PrivateRoute;

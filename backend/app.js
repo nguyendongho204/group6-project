@@ -1,8 +1,17 @@
-// app.js
-import express from "express";
-import cors from "cors";
-import authRoutes from "./routes/authRoutes.js";
-import mongoose from "mongoose";
+import express from 'express';
+import mongoose from 'mongoose';
+import dotenv from 'dotenv';
+import cors from 'cors';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import authRoutes from './routes/authRoutes.js';
+import adminRoutes from "./routes/adminRoutes.js";
+import advancedRoutes from "./routes/advancedRoutes.js";
+
+dotenv.config();
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const app = express();
 
@@ -10,23 +19,21 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// MongoDB connection
-mongoose.connect('mongodb+srv://NguyenThanhVu:dongho123@cluster0.tqdrv7b.mongodb.net/groupDB?retryWrites=true&w=majority')
-  .then(() => console.log('✅ Connected to MongoDB Atlas'))
-  .catch(err => console.error('❌ MongoDB connection error:', err));
+// Serve static files (ảnh avatar)
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
-// Test route
-app.get("/", (_req, res) => {
-  res.json({ message: "Backend is running ✅" });
-});
+// Connect to MongoDB
+mongoose.connect(process.env.MONGODB_URI)
+    .then(() => console.log('Connected to MongoDB'))
+    .catch(err => console.error('MongoDB connection error:', err));
 
-// Auth routes
-app.use("/api/auth", authRoutes);
+// Routes
+app.use('/api/auth', authRoutes);
+app.use('/api', authRoutes); // Thêm route cho /api/users/:id
+app.use("/api/admin", adminRoutes);
+app.use("/api", advancedRoutes);
 
-// Thay đổi port từ 3001 sang port khác, ví dụ 3002
-const port = 3002;
+const port = process.env.PORT || 5001;
 app.listen(port, () => {
-  console.log(`Server đang chạy trên port ${port}`);
+    console.log(`Server is running on port ${port}`);
 });
-
-export default app;
