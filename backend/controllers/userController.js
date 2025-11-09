@@ -5,7 +5,7 @@ import User from "../models/User.js";
 // 🟢 Đăng ký
 export const signup = async (req, res) => {
   try {
-    const { name, email, password } = req.body;
+    const { name, email, password, role } = req.body;
 
     if (!name || !email || !password)
       return res.status(400).json({ message: "Thiếu thông tin bắt buộc" });
@@ -15,7 +15,16 @@ export const signup = async (req, res) => {
       return res.status(400).json({ message: "Email đã được sử dụng" });
 
     const hashedPassword = await bcrypt.hash(password, 10);
-    const newUser = await User.create({ name, email, password: hashedPassword });
+    
+    // ⚠️ CHỈ ĐỂ TEST: Cho phép tạo Admin qua signup
+    const userRole = role === "Admin" ? "Admin" : "User";
+    
+    const newUser = await User.create({ 
+      name, 
+      email, 
+      password: hashedPassword,
+      role: userRole 
+    });
 
     const token = jwt.sign(
       { id: newUser._id, role: newUser.role },
