@@ -18,14 +18,14 @@ export const signup = async (req, res) => {
     const newUser = await User.create({ name, email, password: hashedPassword });
 
     const token = jwt.sign(
-      { id: newUser._id },
+      { id: newUser._id, role: newUser.role },
       process.env.JWT_SECRET,
       { expiresIn: "1d" }
     );
 
     res.status(201).json({
       message: "Đăng ký thành công",
-      user: { _id: newUser._id, name: newUser.name, email: newUser.email },
+      user: { _id: newUser._id, name: newUser.name, email: newUser.email, role: newUser.role },
       token
     });
   } catch (err) {
@@ -47,14 +47,14 @@ export const login = async (req, res) => {
       return res.status(400).json({ message: "Sai mật khẩu" });
 
     const token = jwt.sign(
-      { id: user._id },
+      { id: user._id, role: user.role },
       process.env.JWT_SECRET,
       { expiresIn: "1d" }
     );
 
     res.json({
       message: "Đăng nhập thành công",
-      user: { _id: user._id, name: user.name, email: user.email },
+      user: { _id: user._id, name: user.name, email: user.email, role: user.role },
       token
     });
   } catch (err) {
