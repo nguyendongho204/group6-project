@@ -25,7 +25,7 @@ export const signup = async (req, res) => {
 
     res.status(201).json({
       message: "Đăng ký thành công",
-      user: { id: newUser._id, name: newUser.name, email: newUser.email },
+      user: { _id: newUser._id, name: newUser.name, email: newUser.email },
       token
     });
   } catch (err) {
@@ -54,7 +54,7 @@ export const login = async (req, res) => {
 
     res.json({
       message: "Đăng nhập thành công",
-      user: { id: user._id, name: user.name, email: user.email },
+      user: { _id: user._id, name: user.name, email: user.email },
       token
     });
   } catch (err) {
@@ -82,20 +82,27 @@ export const getUserInfo = async (req, res) => {
 export const updateUser = async (req, res) => {
   try {
     const { id } = req.params;
-    const { name, email } = req.body;
+    const { name, email, password } = req.body;
+
+    const updateData = { name, email };
+    
+    // Nếu có mật khẩu mới, hash và cập nhật
+    if (password) {
+      updateData.password = await bcrypt.hash(password, 10);
+    }
 
     const updatedUser = await User.findByIdAndUpdate(
       id,
-      { name, email },
+      updateData,
       { new: true }
     ).select("-password");
 
     if (!updatedUser)
-      return res.status(404).json({ message: "Không tìm thấy người dùng" });
+return res.status(404).json({ success: false, message: "Không tìm thấy người dùng" });
 
-    res.json({ message: "Cập nhật thành công", user: updatedUser });
+    res.json({ success: true, message: "Cập nhật thành công", user: updatedUser });
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    res.status(500).json({ success: false, message: err.message });
   }
 };
 

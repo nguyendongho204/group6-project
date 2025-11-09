@@ -3,6 +3,7 @@ import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import cors from 'cors';
 import authRoutes from './routes/authRoutes.js';
+import adminRoutes from "./routes/adminRoutes.js";
 
 dotenv.config();
 
@@ -19,9 +20,11 @@ mongoose.connect(process.env.MONGODB_URI)
 
 // Routes
 app.use('/api/auth', authRoutes);
+app.use('/api', authRoutes); // Thêm route cho /api/users/:id
+app.use("/api/admin", adminRoutes);
 
-// Đổi port từ 3002 thành 5000
-const port = process.env.PORT || 5000;
+
+const port = process.env.PORT || 5001;
 app.listen(port, () => {
     console.log(`Server is running on port ${port}`);
 });

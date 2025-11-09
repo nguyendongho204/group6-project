@@ -1,16 +1,17 @@
-// backend/models/User.js
 import mongoose from "mongoose";
 
-// ✅ Định nghĩa Schema cho User
 const userSchema = new mongoose.Schema({
   name: { type: String, required: true },
   email: { type: String, required: true },
   password: { type: String, required: true },
+  role: {
+    type: String,
+    enum: ["User", "Admin"],
+    default: "User"  // mặc định là User
+  },
   createdAt: { type: Date, default: Date.now }
 });
 
-// ✅ Tạo model
 const User = mongoose.model("User", userSchema);
 
-// ✅ Export mặc định
 export default User;
