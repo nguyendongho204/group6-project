@@ -1,6 +1,6 @@
 import React from 'react';
 import { useAuth } from '../context/AuthContext';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import './Dashboard.css';
 
 const Dashboard = () => {
@@ -50,12 +50,15 @@ const Dashboard = () => {
                 <div className="quick-actions">
                     <h3>Hành Động Nhanh</h3>
                     <div className="action-buttons">
-                        <button className="action-btn" onClick={() => alert('Chức năng sẽ có trong Hoạt động 2')}>
+                        {/* Thay đổi button thành Link */}
+                        <Link to="/profile" className="action-btn">
                             Cập Nhật Hồ Sơ
-                        </button>
-                        <button className="action-btn" onClick={() => alert('Chức năng sẽ có trong Hoạt động 3')}>
-                            Quản Lý Users (Admin)
-                        </button>
+                        </Link>
+                        {user?.role === 'Admin' && (
+                            <Link to="/admin" className="action-btn admin-btn">
+                                👨‍💼 Quản Lý Users (Admin)
+                            </Link>
+                        )}
                         <button className="action-btn" onClick={() => alert('Chức năng sẽ có trong Hoạt động 4')}>
                             Đổi Mật Khẩu
                         </button>

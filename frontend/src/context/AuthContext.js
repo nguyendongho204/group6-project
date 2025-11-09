@@ -1,33 +1,14 @@
 import React, { createContext, useContext, useReducer, useEffect } from 'react';
 import axios from 'axios';
 
-// Tạo Context
 const AuthContext = createContext();
 
-// Set default URL cho axios
-axios.defaults.baseURL = 'http://localhost:3002/api';
-
-// Thêm interceptor để xử lý lỗi
-axios.interceptors.response.use(
-    response => response,
-    error => {
-        console.error('API Error:', error);
-        if (error.response) {
-            console.log('Response Error:', error.response.data);
-            console.log('Status:', error.response.status);
-        } else if (error.request) {
-            console.log('Request Error:', error.request);
-        } else {
-            console.log('Error Config:', error.config);
-        }
-        return Promise.reject(error);
-    }
-);
+axios.defaults.baseURL = 'http://localhost:5001/api';
 
 const initialState = {
     user: null,
     token: localStorage.getItem('token'),
-    isAuthenticated: false,
+    isAuthenticated: Boolean(localStorage.getItem('token')),
     loading: true,
     error: null
 };
@@ -70,6 +51,13 @@ const authReducer = (state, action) => {
                 error: null
             };
         
+        case 'UPDATE_USER':
+            return {
+                ...state,
+                user: action.payload,
+                loading: false
+            };
+        
         default:
             return state;
     }
@@ -78,7 +66,6 @@ const authReducer = (state, action) => {
 export const AuthProvider = ({ children }) => {
     const [state, dispatch] = useReducer(authReducer, initialState);
 
-    // Set auth token trong headers
     const setAuthToken = (token) => {
         if (token) {
             console.log('Setting auth token:', token);
@@ -91,114 +78,86 @@ export const AuthProvider = ({ children }) => {
         }
     };
 
-    // Load user khi app khởi động
     useEffect(() => {
-        if (state.token) {
-            setAuthToken(state.token);
-        }
-        dispatch({ type: 'SET_LOADING', payload: false });
-    }, [state.token]);
-
-    // Đăng ký user mới
-    const signup = async (userData) => {
-        try {
-            dispatch({ type: 'SET_LOADING', payload: true });
-            
-            console.log('Đang gửi yêu cầu đăng ký...', userData);
-            
-            const response = await axios.post('/auth/signup', userData);
-            
-            console.log('Phản hồi từ server:', response.data);
-            
-            // Tạo token nếu server không trả về
-            const token = response.data.token || Math.random().toString(36).substring(7);
-            
-            dispatch({
-                type: 'SIGNUP_SUCCESS',
-                payload: {
-                    token: token,
-                    user: response.data.user || { name: userData.name, email: userData.email }
+        const loadUser = async () => {
+            const token = localStorage.getItem('token');
+            if (token) {
+                setAuthToken(token);
+                try {
+                    const res = await axios.get('/auth/me');
+                    dispatch({
+                        type: 'LOGIN_SUCCESS',
+                        payload: {
+                            token: token,
+                            user: res.data.user
+                        }
+                    });
+                } catch (error) {
+                    console.error('Error loading user:', error);
+                    dispatch({ type: 'AUTH_ERROR' });
                 }
-            });
-            
-            return { 
-                success: true, 
-                message: response.data.message || 'Đăng ký thành công!'
-            };
-        } catch (error) {
-            console.error('Lỗi đăng ký:', error);
-            
-            let errorMessage;
-            if (error.response) {
-                errorMessage = error.response.data?.message || 'Lỗi từ server';
-            } else if (error.request) {
-                errorMessage = 'Không thể kết nối đến server';
-            } else {
-                errorMessage = error.message || 'Đã xảy ra lỗi';
             }
-
-            dispatch({
-                type: 'AUTH_ERROR',
-                payload: errorMessage
-            });
-            
-            return { 
-                success: false, 
-                message: errorMessage 
-            };
-        } finally {
             dispatch({ type: 'SET_LOADING', payload: false });
-        }
+        };
+
+        loadUser();
+    }, []);
+
+    const updateUserContext = (userData) => {
+        dispatch({
+            type: 'UPDATE_USER',
+            payload: userData
+        });
     };
 
-    // Đăng nhập
     const login = async (userData) => {
         try {
             dispatch({ type: 'SET_LOADING', payload: true });
             
-            console.log('Đang đăng nhập...', userData);
-            
             const response = await axios.post('/auth/login', userData);
             
-            console.log('Phản hồi đăng nhập:', response.data);
+            setAuthToken(response.data.token);
             
             dispatch({
                 type: 'LOGIN_SUCCESS',
                 payload: {
                     token: response.data.token,
-                    user: response.data.user || { email: userData.email }
+                    user: response.data.user
                 }
             });
             
-            return { success: true, message: response.data.message };
+            return { 
+                success: true, 
+                message: 'Đăng nhập thành công!'
+            };
         } catch (error) {
             console.error('Lỗi đăng nhập:', error);
             
-            const errorMessage = error.response?.data?.message || 'Đăng nhập thất bại';
             dispatch({
                 type: 'AUTH_ERROR',
-                payload: errorMessage
+                payload: error.response?.data?.message || 'Đăng nhập thất bại'
             });
             
-            return { success: false, message: errorMessage };
+            return { 
+                success: false, 
+                message: error.response?.data?.message || 'Đăng nhập thất bại'
+            };
         } finally {
             dispatch({ type: 'SET_LOADING', payload: false });
         }
     };
 
-    // Đăng xuất
     const logout = async () => {
         try {
-            console.log('Đang đăng xuất...');
             await axios.post('/auth/logout');
-            dispatch({ type: 'LOGOUT' });
         } catch (error) {
-            console.error('Lỗi đăng xuất:', error);
+            console.error('Logout error:', error);
+        } finally {
+            setAuthToken(null);
             dispatch({ type: 'LOGOUT' });
         }
     };
 
-    // Xóa lỗi
     const clearErrors = () => {
         dispatch({ type: 'CLEAR_ERRORS' });
     };
@@ -206,10 +165,10 @@ export const AuthProvider = ({ children }) => {
     return (
         <AuthContext.Provider value={{
             ...state,
-            signup,
             login,
             logout,
-            clearErrors
+            clearErrors,
+            updateUserContext
         }}>
             {children}
         </AuthContext.Provider>

@@ -106,10 +106,21 @@
     cursor: pointer;
     font-size: 14px;
     transition: background 0.3s ease;
+    text-decoration: none;
+    display: inline-block;
 }
 
 .action-btn:hover {
     background: #5a6fd8;
+}
+
+.action-btn.admin-btn {
+    background: linear-gradient(135deg, #ffc107 0%, #ff9800 100%);
+    font-weight: 600;
+}
+
+.action-btn.admin-btn:hover {
+    background: linear-gradient(135deg, #ffb300 0%, #f57c00 100%);
 }
 
 @media (max-width: 768px) {
