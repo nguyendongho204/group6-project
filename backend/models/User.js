@@ -7,7 +7,7 @@ const userSchema = new mongoose.Schema({
   role: {
     type: String,
     enum: ["User", "Admin"],
-    default: "User"  // mặc định là User
+    default: "User"
   },
   createdAt: { type: Date, default: Date.now }
 });

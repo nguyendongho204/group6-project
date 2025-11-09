@@ -110,10 +110,18 @@ return res.status(404).json({ success: false, message: "Không tìm thấy ngư�
 export const deleteUser = async (req, res) => {
   try {
     const { id } = req.params;
-    const deletedUser = await User.findByIdAndDelete(id);
+    const requesterId = req.user.id;
 
+    const requester = await User.findById(requesterId);
+    if (!requester) return res.status(404).json({ message: "Người thực hiện không tồn tại" });
+
+    if (requester.role !== "Admin" && requesterId !== id) {
+      return res.status(403).json({ message: "Bạn không có quyền xóa tài khoản này" });
+    }
+
+    const deletedUser = await User.findByIdAndDelete(id);
     if (!deletedUser)
-      return res.status(404).json({ message: "Không tìm thấy người dùng" });
+      return res.status(404).json({ message: "Không tìm thấy người dùng cần xóa" });
 
     res.json({ message: "Đã xóa người dùng thành công" });
   } catch (err) {
